@@ -46,7 +46,7 @@ import com.owncloud.android.R;
 import com.owncloud.android.authentication.AccountUtils;
 import com.owncloud.android.db.ProviderMeta.ProviderTableMeta;
 import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.shares.OCShare;
+import com.owncloud.android.lib.resources.shares.RemoteShare;
 import com.owncloud.android.lib.resources.shares.ShareType;
 import com.owncloud.android.lib.resources.status.CapabilityBooleanType;
 import com.owncloud.android.lib.resources.status.OCCapability;
@@ -1133,7 +1133,7 @@ public class FileDataStorageManager {
     }
 
     // Methods for Shares
-    public boolean saveShare(OCShare share) {
+    public boolean saveShare(RemoteShare share) {
         boolean overriden = false;
         ContentValues cv = new ContentValues();
         cv.put(ProviderTableMeta.OCSHARES_FILE_SOURCE, share.getFileSource());
@@ -1203,13 +1203,13 @@ public class FileDataStorageManager {
     }
 
     /**
-     * Retrieves an stored {@link OCShare} given its id.
+     * Retrieves an stored {@link RemoteShare} given its id.
      *
      * @param id    Identifier.
-     * @return      Stored {@link OCShare} given its id.
+     * @return      Stored {@link RemoteShare} given its id.
      */
-    public OCShare getShareById(long id) {
-        OCShare share = null;
+    public RemoteShare getShareById(long id) {
+        RemoteShare share = null;
         Cursor c = getShareCursorForValue(
                 ProviderTableMeta._ID,
                 String.valueOf(id)
@@ -1225,13 +1225,13 @@ public class FileDataStorageManager {
 
 
     /**
-     * Retrieves an stored {@link OCShare} given its id.
+     * Retrieves an stored {@link RemoteShare} given its id.
      *
      * @param id    Identifier of the share in OC server.
-     * @return      Stored {@link OCShare} given its remote id.
+     * @return      Stored {@link RemoteShare} given its remote id.
      */
-    public OCShare getShareByRemoteId(long id) {
-        OCShare share = null;
+    public RemoteShare getShareByRemoteId(long id) {
+        RemoteShare share = null;
         Cursor c = getShareCursorForValue(
             ProviderTableMeta.OCSHARES_ID_REMOTE_SHARED,
             String.valueOf(id)
@@ -1247,11 +1247,11 @@ public class FileDataStorageManager {
 
 
     /**
-     * Checks the existance of an stored {@link OCShare} matching the given remote id (not to be confused with
+     * Checks the existance of an stored {@link RemoteShare} matching the given remote id (not to be confused with
      * the local id) in the current account.
      *
      * @param remoteId      Remote of the share in the server.
-     * @return              'True' if a matching {@link OCShare} is stored in the current account.
+     * @return              'True' if a matching {@link RemoteShare} is stored in the current account.
      */
     private boolean shareExistsForRemoteId(long remoteId) {
         return shareExistsForValue(ProviderTableMeta.OCSHARES_ID_REMOTE_SHARED, String.valueOf(remoteId));
@@ -1259,12 +1259,12 @@ public class FileDataStorageManager {
 
 
     /**
-     * Checks the existance of an stored {@link OCShare} in the current account
+     * Checks the existance of an stored {@link RemoteShare} in the current account
      * matching a given column and a value for that column
      *
      * @param key           Name of the column to match.
      * @param value         Value of the column to match.
-     * @return              'True' if a matching {@link OCShare} is stored in the current account.
+     * @return              'True' if a matching {@link RemoteShare} is stored in the current account.
      */
     private boolean shareExistsForValue(String key, String value) {
         Cursor c = getShareCursorForValue(key, value);
@@ -1278,12 +1278,12 @@ public class FileDataStorageManager {
 
 
     /**
-     * Gets a {@link Cursor} for an stored {@link OCShare} in the current account
+     * Gets a {@link Cursor} for an stored {@link RemoteShare} in the current account
      * matching a given column and a value for that column
      *
      * @param key           Name of the column to match.
      * @param value         Value of the column to match.
-     * @return              'True' if a matching {@link OCShare} is stored in the current account.
+     * @return              'True' if a matching {@link RemoteShare} is stored in the current account.
      */
     private Cursor getShareCursorForValue(String key, String value) {
         Cursor c;
@@ -1315,31 +1315,28 @@ public class FileDataStorageManager {
         return c;
     }
 
-    private OCShare createShareInstance(Cursor c) {
-        OCShare share = null;
+    private RemoteShare createShareInstance(Cursor c) {
+        RemoteShare share = null;
         if (c != null) {
-            share = new OCShare(c.getString(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_PATH)));
-            share.setId(c.getLong(
-                    c.getColumnIndex(ProviderTableMeta._ID)));
-            share.setFileSource(c.getLong(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_ITEM_SOURCE)));
-            share.setShareType(ShareType.fromValue(c.getInt(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_SHARE_TYPE))));
-            share.setShareWith(c.getString(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_SHARE_WITH)));
-            share.setPermissions(c.getInt(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_PERMISSIONS)));
-            share.setSharedDate(c.getLong(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_SHARED_DATE)));
-            share.setExpirationDate(c.getLong(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_EXPIRATION_DATE)));
-            share.setToken(c.getString(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_TOKEN)));
-            share.setSharedWithDisplayName(c.getString(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_SHARE_WITH_DISPLAY_NAME)));
-            share.setSharedWithAdditionalInfo(c.getString(
-                    c.getColumnIndex(ProviderTableMeta.OCSHARES_SHARE_WITH_ADDITIONAL_INFO)));
+            share = new RemoteShare(c.getString(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_PATH)));
+            share.setId(c.getLong(c.getColumnIndex(ProviderTableMeta._ID)));
+            share.setFileSource(c.getLong(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_ITEM_SOURCE)));
+            share.setShareType(ShareType.fromValue(c.getInt(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_SHARE_TYPE))));
+            share.setShareWith(c.getString(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_SHARE_WITH)));
+            share.setPermissions(c.getInt(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_PERMISSIONS)));
+            share.setSharedDate(c.getLong(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_SHARED_DATE)));
+            share.setExpirationDate(c.getLong(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_EXPIRATION_DATE)));
+            share.setToken(c.getString(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_TOKEN)));
+            share.setSharedWithDisplayName(c.getString(c
+                    .getColumnIndex(ProviderTableMeta.OCSHARES_SHARE_WITH_DISPLAY_NAME)));
             share.setIsFolder(c.getInt(
                     c.getColumnIndex(ProviderTableMeta.OCSHARES_IS_DIRECTORY)) == 1);
             share.setUserId(c.getLong(
@@ -1436,7 +1433,7 @@ public class FileDataStorageManager {
         }
     }
 
-    public void removeShare(OCShare share) {
+    public void removeShare(RemoteShare share) {
         Uri share_uri = ProviderTableMeta.CONTENT_URI_SHARE;
         String where = ProviderTableMeta.OCSHARES_ACCOUNT_OWNER + "=?" + " AND " +
                 ProviderTableMeta._ID + "=?";
@@ -1452,12 +1449,12 @@ public class FileDataStorageManager {
         }
     }
 
-    public void saveShares(ArrayList<OCShare> shares) {
+    public void saveShares(ArrayList<RemoteShare> shares) {
         ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
 
         // Reset flags & Remove shares for this files
         String filePath = "";
-        for (OCShare share: shares) {
+        for (RemoteShare share: shares) {
             if (!filePath.equals(share.getPath())){
                 filePath = share.getPath();
                 resetShareFlagInAFile(filePath);
@@ -1514,7 +1511,7 @@ public class FileDataStorageManager {
     }
 
 
-    public void saveSharesInFolder(ArrayList<OCShare> shares, OCFile folder) {
+    public void saveSharesInFolder(ArrayList<RemoteShare> shares, OCFile folder) {
         resetShareFlagsInFolder(folder);
         ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
         operations = prepareRemoveSharesInFolder(folder, operations);
@@ -1553,11 +1550,11 @@ public class FileDataStorageManager {
      * @return
      */
     private ArrayList<ContentProviderOperation> prepareInsertShares(
-            ArrayList<OCShare> shares, ArrayList<ContentProviderOperation> operations) {
+            ArrayList<RemoteShare> shares, ArrayList<ContentProviderOperation> operations) {
 
         if (shares != null) {
             // prepare operations to insert or update files to save in the given folder
-            for (OCShare share : shares) {
+            for (RemoteShare share : shares) {
                 ContentValues cv = new ContentValues();
                 cv.put(ProviderTableMeta.OCSHARES_FILE_SOURCE, share.getFileSource());
                 cv.put(ProviderTableMeta.OCSHARES_ITEM_SOURCE, share.getItemSource());
@@ -1634,7 +1631,7 @@ public class FileDataStorageManager {
 
     }
 
-    public ArrayList<OCShare> getPrivateSharesForAFile(String filePath, String accountName){
+    public ArrayList<RemoteShare> getPrivateSharesForAFile(String filePath, String accountName){
         // Condition
         String where = ProviderTableMeta.OCSHARES_PATH + "=?" + " AND "
                 + ProviderTableMeta.OCSHARES_ACCOUNT_OWNER + "=?"+ "AND"
@@ -1662,8 +1659,8 @@ public class FileDataStorageManager {
                 c = null;
             }
         }
-        ArrayList<OCShare> privateShares = new ArrayList<>();
-        OCShare privateShare;
+        ArrayList<RemoteShare> privateShares = new ArrayList<>();
+        RemoteShare privateShare;
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
@@ -1677,7 +1674,7 @@ public class FileDataStorageManager {
         return privateShares;
     }
 
-    public ArrayList<OCShare> getPublicSharesForAFile(String filePath, String accountName){
+    public ArrayList<RemoteShare> getPublicSharesForAFile(String filePath, String accountName){
         // Condition
         String where = ProviderTableMeta.OCSHARES_PATH + "=?" + " AND "
             + ProviderTableMeta.OCSHARES_ACCOUNT_OWNER + "=?"+ "AND "
@@ -1701,8 +1698,8 @@ public class FileDataStorageManager {
                 c = null;
             }
         }
-        ArrayList<OCShare> publicShares = new ArrayList<>();
-        OCShare publicShare;
+        ArrayList<RemoteShare> publicShares = new ArrayList<>();
+        RemoteShare publicShare;
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
