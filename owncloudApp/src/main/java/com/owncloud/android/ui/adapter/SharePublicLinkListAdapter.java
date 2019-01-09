@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.owncloud.android.R;
 import com.owncloud.android.utils.PreferenceUtils;
 import com.owncloud.android.lib.resources.shares.RemoteShare;
+import com.owncloud.android.shares.db.OCShare;
 
 import java.util.ArrayList;
 
@@ -41,10 +42,10 @@ import java.util.ArrayList;
 public class SharePublicLinkListAdapter extends ArrayAdapter{
 
     private Context mContext;
-    private ArrayList<RemoteShare> mPublicLinks;
+    private ArrayList<OCShare> mPublicLinks;
     private SharePublicLinkListAdapter.SharePublicLinkAdapterListener mListener;
 
-    public SharePublicLinkListAdapter(Context context, int resource, ArrayList<RemoteShare>shares,
+    public SharePublicLinkListAdapter(Context context, int resource, ArrayList<OCShare>shares,
                                       SharePublicLinkListAdapter.SharePublicLinkAdapterListener listener) {
         super(context, resource);
         mContext= context;
@@ -81,7 +82,7 @@ public class SharePublicLinkListAdapter extends ArrayAdapter{
 
         if (mPublicLinks != null && mPublicLinks.size() > position) {
 
-            RemoteShare share = mPublicLinks.get(position);
+            OCShare share = mPublicLinks.get(position);
 
             TextView shareName = view.findViewById(R.id.publicLinkName);
 
@@ -120,8 +121,8 @@ public class SharePublicLinkListAdapter extends ArrayAdapter{
     }
 
     public interface SharePublicLinkAdapterListener {
-        void copyOrSendPublicLink(RemoteShare share);
-        void removePublicShare(RemoteShare share);
-        void editPublicShare(RemoteShare share);
+        void copyOrSendPublicLink(OCShare share);
+        void removePublicShare(OCShare share);
+        void editPublicShare(OCShare share);
     }
 }
