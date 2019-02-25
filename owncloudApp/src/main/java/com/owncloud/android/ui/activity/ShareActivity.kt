@@ -128,8 +128,8 @@ class ShareActivity : FileActivity(), ShareFragmentListener {
             val dataString = intent.dataString
             val shareWith = dataString!!.substring(dataString.lastIndexOf('/') + 1)
             doShareWith(
-                shareWith,
-                data!!.authority
+                    shareWith,
+                    data!!.authority
             )
 
         } else {
@@ -154,10 +154,10 @@ class ShareActivity : FileActivity(), ShareFragmentListener {
         val shareType = UsersAndGroupsSearchProvider.getShareType(dataAuthority)
 
         fileOperationsHelper.shareFileWithSharee(
-            file,
-            shareeName,
-            shareType,
-            getAppropiatePermissions(shareType)
+                file,
+                shareeName,
+                shareType,
+                getAppropiatePermissions(shareType)
         )
     }
 
@@ -242,9 +242,9 @@ class ShareActivity : FileActivity(), ShareFragmentListener {
 
         // Create and show the dialog
         val newFragment = PublicShareDialogFragment.newInstanceToCreate(
-            file,
-            account,
-            defaultLinkName
+                file,
+                account,
+                defaultLinkName
         )
         newFragment.show(ft, TAG_PUBLIC_SHARE_DIALOG_FRAGMENT)
     }
@@ -259,8 +259,8 @@ class ShareActivity : FileActivity(), ShareFragmentListener {
 
         // Create and show the dialog.
         val newFragment = PublicShareDialogFragment.newInstanceToUpdate(
-            file, share,
-            account
+                file, share,
+                account
         )
         newFragment.show(ft, TAG_PUBLIC_SHARE_DIALOG_FRAGMENT)
     }
@@ -300,15 +300,15 @@ class ShareActivity : FileActivity(), ShareFragmentListener {
         }
 
         if (operation is UpdateSharePermissionsOperation
-            && editShareFragment != null && editShareFragment!!.isAdded
+                && editShareFragment != null && editShareFragment!!.isAdded
         ) {
             editShareFragment!!.onUpdateSharePermissionsFinished(result as RemoteOperationResult<ShareParserResult>?)
         }
     }
 
     private fun onCreateShareViaLinkOperationFinish(
-        operation: CreateShareViaLinkOperation,
-        result: RemoteOperationResult<ShareParserResult>
+            operation: CreateShareViaLinkOperation,
+            result: RemoteOperationResult<ShareParserResult>
     ) {
         if (result.isSuccess) {
             updateFileFromDB()
@@ -319,14 +319,14 @@ class ShareActivity : FileActivity(), ShareFragmentListener {
 
         } else {
             publicShareFragment!!.showError(
-                ErrorMessageAdapter.getResultMessage(result, operation, resources)
+                    ErrorMessageAdapter.getResultMessage(result, operation, resources)!!
             )
         }
     }
 
     private fun onUpdateShareViaLinkOperationFinish(
-        operation: UpdateShareViaLinkOperation,
-        result: RemoteOperationResult<ShareParserResult>
+            operation: UpdateShareViaLinkOperation,
+            result: RemoteOperationResult<ShareParserResult>
     ) {
         if (result.isSuccess) {
             updateFileFromDB()
@@ -337,7 +337,7 @@ class ShareActivity : FileActivity(), ShareFragmentListener {
 
         } else {
             publicShareFragment!!.showError(
-                ErrorMessageAdapter.getResultMessage(result, operation, resources)
+                    ErrorMessageAdapter.getResultMessage(result, operation, resources)!!
             )
         }
     }
